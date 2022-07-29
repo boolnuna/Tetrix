@@ -230,14 +230,14 @@ public class Mono : MonoBehaviour
         new Vector2Int(0,0),
         new Vector2Int(0,0)
     };
-    public Vector2Int[] Blocks()
+    public Vector2Int[] JustTheBlocks(int oriIndex)
     {
         int i = 0;
         for (int y = 0; y < 4; y++)
         {
             for (int x = 0; x < 4; x++)
             {
-                if (og[fall.ogIndex][fall.oriIndex][y, x] == 1)
+                if (og[fall.ogIndex][oriIndex][y, x] == 1)
                 {
                     bbb[i].x = x;
                     bbb[i].y = y;
@@ -326,11 +326,7 @@ public class Mono : MonoBehaviour
         // Tetromino rotation
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
-            fall.oriIndex++;
-            if (fall.oriIndex >= 4)
-            {
-                fall.oriIndex = 0;
-            }
+            Turn();
         }
 
         if (keyRight.IsDown()) { Shift(new Vector2Int(1, 0), false); }
@@ -375,10 +371,37 @@ public class Mono : MonoBehaviour
             Random.Range(0, pattern.Length)
         );
     }
-    public bool Shift(Vector2Int v, bool place)
+    public bool Turn()
     {
-        bool shift = true;
-        Vector2Int[] blocks = Blocks();
+        int oriIndex = fall.oriIndex + 1;
+        oriIndex = oriIndex >= 4 ? 0 : oriIndex;
+
+        bool canTurn = true;
+        Vector2Int[] blocks = JustTheBlocks(oriIndex);
+        for (int i = 0; i < 4; i++)
+        {
+            Vector2Int b = blocks[i];
+            bool right = fallPos.x + b.x >= grid.GetLength(0);
+            if (right)
+            {
+                canTurn = Shift(Vector2Int.left, false, oriIndex);
+                break;
+            }
+        }
+        if (canTurn)
+        {
+            fall.oriIndex = oriIndex;
+        }
+        return canTurn;
+    }
+    public bool Shift(Vector2Int v, bool place, int? oriIndex = null)
+    {
+        if (oriIndex == null)
+        {
+            oriIndex =  fall.oriIndex;
+        }
+        bool canMove = true;
+        Vector2Int[] blocks = JustTheBlocks((int)oriIndex);
         for (int i = 0; i < 4; i++)
         {
             Vector2Int b = blocks[i];
@@ -387,14 +410,14 @@ public class Mono : MonoBehaviour
             bool right = fallPos.x + b.x + v.x >= grid.GetLength(0);
             if (InBlock(b.x, b.y, v.x, v.y) || under || left || right)
             {
-                shift = false;
+                canMove = false;
                 break;
             }
         }
-        if (shift)
+        if (canMove)
         {
             fallPos += v;
-            return shift;
+            return canMove;
         }
 
         // yo im planting
@@ -434,7 +457,7 @@ public class Mono : MonoBehaviour
 
             Restock();
         }
-        return shift;
+        return canMove;
     }
 
 
