@@ -377,15 +377,22 @@ public class Mono : MonoBehaviour
         oriIndex = oriIndex >= 4 ? 0 : oriIndex;
 
         bool canTurn = true;
-        Vector2Int[] blocks = JustTheBlocks(oriIndex);
-        for (int i = 0; i < 4; i++)
+
+        canTurn = Shift(Vector2Int.zero, false, oriIndex);
+        if (!canTurn)
         {
-            Vector2Int b = blocks[i];
-            bool right = fallPos.x + b.x >= grid.GetLength(0);
-            if (right)
+            canTurn = Shift(Vector2Int.left, false, oriIndex);
+            if (!canTurn)
             {
-                canTurn = Shift(Vector2Int.left, false, oriIndex);
-                break;
+                canTurn = Shift(Vector2Int.right, false, oriIndex);
+                if (!canTurn)
+                {
+                    canTurn = Shift(Vector2Int.up, false, oriIndex);
+                    if (!canTurn)
+                    {
+                        canTurn = Shift(Vector2Int.down, false, oriIndex);
+                    }
+                }
             }
         }
         if (canTurn)
@@ -398,7 +405,7 @@ public class Mono : MonoBehaviour
     {
         if (oriIndex == null)
         {
-            oriIndex =  fall.oriIndex;
+            oriIndex = fall.oriIndex;
         }
         bool canMove = true;
         Vector2Int[] blocks = JustTheBlocks((int)oriIndex);
