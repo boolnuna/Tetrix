@@ -79,7 +79,7 @@ public class Mono : MonoBehaviour
             },
             new int[,]{
                 {0,0,0,0},
-                {1,1,1,1},
+                {0,1,1,1},
                 {0,0,0,1},
                 {0,0,0,0}
             },
@@ -173,6 +173,32 @@ public class Mono : MonoBehaviour
                 {0,0,0,0},
                 {0,0,0,0}
             }
+        },
+        new int[][,]{
+            new int[,]{
+                {0,0,0,0},
+                {0,1,1,0},
+                {0,1,1,0},
+                {0,0,0,0}
+            },
+            new int[,]{
+                {0,0,0,0},
+                {0,1,1,0},
+                {0,1,1,0},
+                {0,0,0,0}
+            },
+            new int[,]{
+                {0,0,0,0},
+                {0,1,1,0},
+                {0,1,1,0},
+                {0,0,0,0}
+            },
+            new int[,]{
+                {0,0,0,0},
+                {0,1,1,0},
+                {0,1,1,0},
+                {0,0,0,0}
+            }
         }
     };
     [NonSerialized]
@@ -223,6 +249,8 @@ public class Mono : MonoBehaviour
     public Tetromino fall;
     public Vector2Int fallPos;
 
+    public int score = 0;
+
     Vector2Int[] bbb = new Vector2Int[]
     {
         new Vector2Int(0,0),
@@ -260,28 +288,6 @@ public class Mono : MonoBehaviour
         }
     }
 
-    // public Vector3 InBounds(Transform t)
-    // {
-
-
-    //     // foreach (Transform child in t)
-    //     // {
-    //     //     if (child.position.x < -bounds.x / 2 || child.position.x > bounds.x / 2)
-    //     //     {
-    //     //         // return direction
-    //     //         float x = Mathf.Sign(child.position.x);
-    //     //         return new Vector3(x, 0, 0);
-    //     //     }
-
-    //     //     if (child.position.y < -bounds.y / 2 || child.position.y > bounds.y / 2)
-    //     //     {
-    //     //         // return direction
-    //     //         float y = Mathf.Sign(child.position.y);
-    //     //         return new Vector3(0, y, 0);
-    //     //     }
-    //     // }
-    //     // return Vector3.zero;
-    // }
     public void Start()
     {
         queue = new Tetromino[4];
@@ -345,13 +351,6 @@ public class Mono : MonoBehaviour
             step = 0f;
             Shift(new Vector2Int(0, -1), true);
         }
-
-        // Debug Tools
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            Restock();
-        }
-
 
         render.Update(this);
     }
@@ -437,6 +436,7 @@ public class Mono : MonoBehaviour
             }
 
             // line checking
+            int cleared = 0;
             for (int y = 0; y < grid.GetLength(1); y++)
             {
                 bool solid = true;
@@ -457,17 +457,16 @@ public class Mono : MonoBehaviour
                             grid[xx, yy - 1] = grid[xx, yy];
                         }
                     }
+                    cleared++;
                     y--;
-                    Debug.Log(y);
                 }
             }
 
+            score += cleared * 4;
             Restock();
         }
         return canMove;
     }
-
-
     public bool InBlock(int x, int y, int xO, int yO)
     {
         return grid[
@@ -475,9 +474,6 @@ public class Mono : MonoBehaviour
            Mathf.Clamp(fallPos.y + (4 - y) + yO, 0, grid.GetLength(1) - 1)
        ] > 0;
     }
-
-
-
 }
 
 [Serializable]
@@ -495,6 +491,79 @@ public class Render
         new Color(0.8f, 0.8f, 0.8f)
 
     };
+    public int[][,] numbers = new int[][,]{
+        new int[,]{
+            {1,1,1,0},
+            {1,0,1,0},
+            {1,0,1,0},
+            {1,0,1,0},
+            {1,1,1,0}
+        },
+        new int[,]{
+            {1,1,0,0},
+            {0,1,0,0},
+            {0,1,0,0},
+            {0,1,0,0},
+            {1,1,1,0}
+        },
+        new int[,]{
+            {1,1,1,0},
+            {0,0,1,0},
+            {1,1,1,0},
+            {1,0,0,0},
+            {1,1,1,0}
+        },
+        new int[,]{
+            {1,1,1,0},
+            {0,0,1,0},
+            {0,1,0,0},
+            {0,0,1,0},
+            {1,1,1,0}
+        },
+        new int[,]{
+            {0,0,1,0},
+            {0,1,1,0},
+            {1,0,1,0},
+            {1,1,1,0},
+            {0,0,1,0}
+        },
+        new int[,]{
+            {1,1,1,0},
+            {1,0,0,0},
+            {1,1,1,0},
+            {0,0,1,0},
+            {1,1,1,0}
+        },
+        new int[,]{
+            {1,1,1,0},
+            {1,0,0,0},
+            {1,1,1,0},
+            {1,0,1,0},
+            {1,1,1,0}
+        },
+        new int[,]{
+            {1,1,1,0},
+            {0,0,1,0},
+            {0,1,1,0},
+            {0,0,1,0},
+            {0,0,1,0}
+        },
+        new int[,]{
+            {1,1,1,0},
+            {1,0,1,0},
+            {1,1,1,0},
+            {1,0,1,0},
+            {1,1,1,0}
+        },
+        new int[,]{
+            {1,1,1,0},
+            {1,0,1,0},
+            {1,1,1,0},
+            {0,0,1,0},
+            {1,1,1,0}
+        },
+    };
+
     public void Start()
     {
         quad.localScale = new Vector3(16, 21, 1);
@@ -548,6 +617,8 @@ public class Render
                 }
             }
         }
+
+        Score(mono.score);
 
         // draw queue vertically on the right side
         for (int i = 0; i < mono.queue.Length; i++)
@@ -614,6 +685,30 @@ public class Render
                     (x * 4) + xx,
                     palette[i]
                 );
+            }
+        }
+    }
+
+    void Score(int number)
+    {
+        string n = number.ToString();
+        for (int d = 0; d < n.Length; d++)
+        {
+            for (int y = 0; y < 5; y++)
+            {
+                for (int x = 0; x < 4; x++)
+                {
+                    int i = int.Parse(n[d].ToString());
+                    if (numbers[i][y, x] > 0)
+                    {
+                        Vector2Int offset = new Vector2Int(100 + (d * 4), 128);
+                        texture.SetPixel(
+                            x + offset.x,
+                            (5 - y) + offset.y,
+                            palette[0]
+                        );
+                    }
+                }
             }
         }
     }
