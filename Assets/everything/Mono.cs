@@ -1,7 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using System;
+using System.IO;
+using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class Mono : MonoBehaviour
@@ -13,6 +12,7 @@ public class Mono : MonoBehaviour
     // transfer over old code
 
     public Render render;
+    public Sounds sounds;
 
     public int[,] grid = new int[10, 20];
 
@@ -298,6 +298,7 @@ public class Mono : MonoBehaviour
             i--;
         }
         render.Start();
+        sounds.Start();
     }
 
     float step = 0f;
@@ -353,12 +354,13 @@ public class Mono : MonoBehaviour
         }
 
         render.Update(this);
+        sounds.Update(this);
     }
 
     public void Restock()
     {
         fall = queue[0];
-        fallPos = new Vector2Int(4, 20);
+        fallPos = new Vector2Int(4, 17);
         // shift down
         for (int i = 0; i < queue.Length; i++)
         {
@@ -464,6 +466,12 @@ public class Mono : MonoBehaviour
 
             score += cleared * 4;
             Restock();
+
+            sounds.Play("drop" + Random.Range(1, 4), 1);
+            if (cleared > 0)
+            {
+                sounds.Play("lineclear", 1);
+            }
         }
         return canMove;
     }
@@ -571,6 +579,7 @@ public class Render
         texture.filterMode = FilterMode.Point;
         texture.wrapMode = TextureWrapMode.Clamp;
         background.mainTexture = texture;
+
         // background.mainTextureScale = new Vector2(1, -1);
     }
     public void Update(Mono mono)
@@ -712,4 +721,62 @@ public class Render
             }
         }
     }
+}
+
+[Serializable]
+public class Sounds
+{
+    public AudioClip[] clips;
+    AudioSource[] sources = new AudioSource[6];
+
+    public void Start()
+    {
+        clips = Resources.LoadAll<AudioClip>("sounds/");
+        for (int i = 0; i < sources.Length; i++)
+        {
+            GameObject go = new GameObject("sound" + i);
+            AudioSource src = go.AddComponent<AudioSource>();
+            src.playOnAwake = false;
+            sources[i] = src;
+        }
+    }
+
+    public void Update(Mono mono)
+    {
+
+    }
+
+    public void Play(string name, float volume)
+    {
+        for (int i = 0; i < sources.Length; i++)
+        {
+            AudioSource source = sources[i];
+            if (!source.isPlaying)
+            {
+                AudioClip clip = GetClip(name);
+                if (clip != null)
+                {
+                    source.clip = clip;
+                    source.volume = volume;
+                    source.Play();
+                }
+                return;
+            }
+        }
+    }
+
+    AudioClip GetClip(string name)
+    {
+        for (int i = 0; i < clips.Length; i++)
+        {
+            AudioClip clip = clips[i];
+            if (name.ToLower().Trim() == clip.name.ToLower().Trim())
+            {
+                return clip;
+            }
+        }
+        Debug.LogWarning("audio clip not found: " + name);
+        return null;
+    }
+
 }
