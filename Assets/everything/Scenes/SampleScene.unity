@@ -445,12 +445,14 @@ MonoBehaviour:
     quad: {fileID: 1780330215}
     background: {fileID: 2100000, guid: 48edd505c355cb745b11bfc129e13c27, type: 2}
     texture: {fileID: 0}
+    swapOffset: {x: 25, y: 36}
     queueOffset: {x: 24, y: 20}
+    scoreOffset: {x: 90, y: 105}
   sounds:
-    dropped: {fileID: 8300000, guid: 4bf4bdaf7abd92c45a0506559be4a615, type: 3}
-    themeSong: {fileID: 8300000, guid: 90447d6271c97354dae17e7aa40373f1, type: 3}
-    yPos: 0
+    clips: []
+  screenShake: 0
   queue: []
+  swapped: 0
   fall:
     ogIndex: 0
     oriIndex: 0
@@ -489,7 +491,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 90447d6271c97354dae17e7aa40373f1, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.363
   m_Pitch: 1
   Loop: 1
   Mute: 0

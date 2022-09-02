@@ -13,7 +13,8 @@ public class Mono : MonoBehaviour
 
     public Render render;
     public Sounds sounds;
-
+    public float screenShake;
+    public float shakeMag;
     public int[,] grid = new int[10, 20];
 
     [NonSerialized]
@@ -246,6 +247,8 @@ public class Mono : MonoBehaviour
 
     };
     public Tetromino[] queue;
+    [NonSerialized] public Tetromino swap = null;
+    public bool swapped = false;
     public Tetromino fall;
     public Vector2Int fallPos;
 
@@ -297,6 +300,7 @@ public class Mono : MonoBehaviour
             Restock();
             i--;
         }
+        swap = null;
         render.Start();
         sounds.Start();
     }
@@ -330,6 +334,24 @@ public class Mono : MonoBehaviour
     }
     void Update()
     {
+        // swap
+        if (Input.GetKeyDown(KeyCode.LeftShift) && !swapped)
+        {
+            if (swap == null)
+            {
+                swap = fall;
+                Restock();
+            }
+            else
+            {
+                Tetromino temp = fall;
+                fall = swap;
+                swap = temp;
+                Topped();
+            }
+            swapped = true;
+        }
+
         // Tetromino rotation
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
@@ -353,6 +375,20 @@ public class Mono : MonoBehaviour
             Shift(new Vector2Int(0, -1), true);
         }
 
+        Transform cam = Camera.main.transform;
+        cam.position = new Vector3(
+            Random.Range(-1f, 1f) * screenShake * shakeMag,
+            Random.Range(-1f, 1f) * screenShake * shakeMag, 
+            -10
+        );
+
+        screenShake *= 1 - (10 * Time.deltaTime);
+
+        if(screenShake < 0.1f)
+        {
+            screenShake = 0;
+        }
+
         render.Update(this);
         sounds.Update(this);
     }
@@ -360,7 +396,7 @@ public class Mono : MonoBehaviour
     public void Restock()
     {
         fall = queue[0];
-        fallPos = new Vector2Int(4, 17);
+        Topped();
         // shift down
         for (int i = 0; i < queue.Length; i++)
         {
@@ -371,6 +407,10 @@ public class Mono : MonoBehaviour
             Random.Range(0, 4),
             Random.Range(0, pattern.Length)
         );
+    }
+    public void Topped()
+    {
+        fallPos = new Vector2Int(4, 17);
     }
     public bool Turn()
     {
@@ -466,6 +506,9 @@ public class Mono : MonoBehaviour
 
             score += cleared * 4;
             Restock();
+            swapped = false;
+
+            screenShake = 1;
 
             sounds.Play("drop" + Random.Range(1, 4), 1);
             if (cleared > 0)
@@ -490,7 +533,10 @@ public class Render
     public Transform quad;
     public Material background;
     public Texture2D texture;
+    public Vector2Int swapOffset;
     public Vector2Int queueOffset;
+    public Vector2Int scoreOffset;
+
     [NonSerialized]
     public Color[] palette = new Color[]{
         new Color(0.2f, 0.2f, 0.2f),
@@ -627,6 +673,25 @@ public class Render
             }
         }
 
+        if (mono.swap != null)
+        {
+            for (int y = 0; y < 4; y++)
+            {
+                for (int x = 0; x < 4; x++)
+                {
+                    if (mono.og[mono.swap.ogIndex][mono.swap.oriIndex][y, x] == 1)
+                    {
+                        Square(
+                            x + swapOffset.x,
+                            (4 - y) + swapOffset.y,
+                            0
+                        );
+
+                    }
+                }
+            }
+        }
+
         Score(mono.score);
 
         // draw queue vertically on the right side
@@ -710,7 +775,7 @@ public class Render
                     int i = int.Parse(n[d].ToString());
                     if (numbers[i][y, x] > 0)
                     {
-                        Vector2Int offset = new Vector2Int(100 + (d * 4), 128);
+                        Vector2Int offset = scoreOffset + new Vector2Int(d * 4, 0);
                         texture.SetPixel(
                             x + offset.x,
                             (5 - y) + offset.y,
