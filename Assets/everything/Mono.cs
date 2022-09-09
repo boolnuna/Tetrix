@@ -47,6 +47,32 @@ public class Mono : MonoBehaviour
             new int[,]{
                 {0,1,0,0},
                 {0,1,0,0},
+                {0,1,0,0},
+                {0,1,0,0}
+            },
+            new int[,]{
+                {0,0,0,0},
+                {1,1,1,1},
+                {0,0,0,0},
+                {0,0,0,0}
+            },
+            new int[,]{
+                {0,1,0,0},
+                {0,1,0,0},
+                {0,1,0,0},
+                {0,1,0,0}
+            },
+            new int[,]{
+                {0,0,0,0},
+                {1,1,1,1},
+                {0,0,0,0},
+                {0,0,0,0}
+            }
+        },
+        new int[][,]{
+            new int[,]{
+                {0,1,0,0},
+                {0,1,0,0},
                 {0,1,1,0},
                 {0,0,0,0}
             },
@@ -252,6 +278,7 @@ public class Mono : MonoBehaviour
     public bool playing = false;
     public bool gameover = false;
     public int score = 0;
+    public int stage = 0;
 
     Vector2Int[] bbb = new Vector2Int[]
     {
@@ -305,6 +332,7 @@ public class Mono : MonoBehaviour
     }
 
     float step = 0f;
+    float speed = 1f;
     public Repeater keyLeft, keyRight, keyDown;
     [Serializable]
     public class Repeater
@@ -319,12 +347,12 @@ public class Mono : MonoBehaviour
         {
             if (Input.GetKeyDown(key))
             {
-                delay = 0.5f + Time.time;
+                delay = 0.3f + Time.time;
                 return true;
             }
             if (Input.GetKey(key) && delay < Time.time)
             {
-                delay = 0.1f + Time.time;
+                delay = 0.05f + Time.time;
                 return true;
             }
             return false;
@@ -402,7 +430,7 @@ public class Mono : MonoBehaviour
 
 
         // step loop
-        step += Time.deltaTime;
+        step += Time.deltaTime * speed;
         if (step > 0.4f)
         {
             step = 0f;
@@ -528,6 +556,9 @@ public class Mono : MonoBehaviour
             }
 
             score += (int)Mathf.Pow(cleared * 4, 2);
+            stage = (int)Mathf.Floor((float)score / (float)500);
+            speed = 1 + (stage / 5);
+
             Restock();
             swapped = false;
 
