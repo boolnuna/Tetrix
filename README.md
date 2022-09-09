@@ -2,7 +2,7 @@
 [X] swap  
 [X] start stop restart  
 [X] score system  
-[ ] fix movement  
+[X] fix movement  
 [ ] stop off screen spawing  
 [ ] speed up over time  
 [ ] particals  
