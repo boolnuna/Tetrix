@@ -344,7 +344,7 @@ public class Mono : MonoBehaviour
             }
             swap = null;
             swapped = false;
-            
+
             grid = new int[10, 20];
 
             step = 0;
@@ -491,7 +491,7 @@ public class Mono : MonoBehaviour
             for (int i = 0; i < 4; i++)
             {
                 Vector2Int b = blocks[i];
-                if(fallPos.y + (4 - b.y) >= grid.GetLength(1))
+                if (fallPos.y + (4 - b.y) >= grid.GetLength(1))
                 {
                     playing = false;
                     gameover = true;
@@ -527,7 +527,7 @@ public class Mono : MonoBehaviour
                 }
             }
 
-            score += cleared * 4;
+            score += (int)Mathf.Pow(cleared * 4, 2);
             Restock();
             swapped = false;
 

@@ -1,13 +1,13 @@
 [X] sounds  
 [X] swap  
 [X] start stop restart  
-[ ] score system / make score borad nicer  
+[X] score system  
 [ ] fix movement  
 [ ] stop off screen spawing  
 [ ] speed up over time  
 [ ] particals  
 [X] screen shake  
 [ ] make sure all patterns  
-[ ] line render  
+[ ] line render / make score borad nicer  
   
 get on site  
