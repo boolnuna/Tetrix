@@ -13,8 +13,6 @@ public class Mono : MonoBehaviour
 
     public Render render;
     public Sounds sounds;
-    public float screenShake;
-    public float shakeMag;
     public int[,] grid = new int[10, 20];
 
     [NonSerialized]
@@ -251,7 +249,8 @@ public class Mono : MonoBehaviour
     public bool swapped = false;
     public Tetromino fall;
     public Vector2Int fallPos;
-
+    public bool playing = false;
+    public bool gameover = false;
     public int score = 0;
 
     Vector2Int[] bbb = new Vector2Int[]
@@ -334,6 +333,40 @@ public class Mono : MonoBehaviour
     }
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            // reset score, queue, falling, swap, grid
+            score = 0;
+
+            for (int i = 0; i < 10; i++)
+            {
+                Restock();
+            }
+            swap = null;
+            swapped = false;
+            
+            grid = new int[10, 20];
+
+            step = 0;
+            gameover = false;
+        }
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            playing = !playing;
+        }
+
+        if (playing && !gameover)
+        {
+            Mechanics();
+        }
+
+        render.Update(this);
+        sounds.Update(this);
+    }
+
+    public void Mechanics()
+    {
         // swap
         if (Input.GetKeyDown(KeyCode.LeftShift) && !swapped)
         {
@@ -367,6 +400,7 @@ public class Mono : MonoBehaviour
             while (i < 100 && Shift(new Vector2Int(0, -1), true)) { i++; }
         }
 
+
         // step loop
         step += Time.deltaTime;
         if (step > 0.4f)
@@ -374,23 +408,6 @@ public class Mono : MonoBehaviour
             step = 0f;
             Shift(new Vector2Int(0, -1), true);
         }
-
-        Transform cam = Camera.main.transform;
-        cam.position = new Vector3(
-            Random.Range(-1f, 1f) * screenShake * shakeMag,
-            Random.Range(-1f, 1f) * screenShake * shakeMag, 
-            -10
-        );
-
-        screenShake *= 1 - (10 * Time.deltaTime);
-
-        if(screenShake < 0.1f)
-        {
-            screenShake = 0;
-        }
-
-        render.Update(this);
-        sounds.Update(this);
     }
 
     public void Restock()
@@ -474,6 +491,12 @@ public class Mono : MonoBehaviour
             for (int i = 0; i < 4; i++)
             {
                 Vector2Int b = blocks[i];
+                if(fallPos.y + (4 - b.y) >= grid.GetLength(1))
+                {
+                    playing = false;
+                    gameover = true;
+                    return false;
+                }
                 grid[fallPos.x + b.x, fallPos.y + (4 - b.y)] = fall.patternIndex + 1;
             }
 
@@ -508,7 +531,7 @@ public class Mono : MonoBehaviour
             Restock();
             swapped = false;
 
-            screenShake = 1;
+            render.screenShake = 1;
 
             sounds.Play("drop" + Random.Range(1, 4), 1);
             if (cleared > 0)
@@ -536,6 +559,8 @@ public class Render
     public Vector2Int swapOffset;
     public Vector2Int queueOffset;
     public Vector2Int scoreOffset;
+    public float screenShake;
+    public float shakeMag;
 
     [NonSerialized]
     public Color[] palette = new Color[]{
@@ -732,6 +757,20 @@ public class Render
             }
         }
         texture.Apply();
+
+        Transform cam = Camera.main.transform;
+        cam.position = new Vector3(
+            Random.Range(-1f, 1f) * screenShake * shakeMag,
+            Random.Range(-1f, 1f) * screenShake * shakeMag,
+            -10
+        );
+
+        screenShake *= 1 - (10 * Time.deltaTime);
+
+        if (screenShake < 0.1f)
+        {
+            screenShake = 0;
+        }
     }
     Vector2Int gridAnchor = new Vector2Int(2, 2);
     void Block(Mono mono, int x, int y, int i)

@@ -448,9 +448,10 @@ MonoBehaviour:
     swapOffset: {x: 25, y: 36}
     queueOffset: {x: 24, y: 20}
     scoreOffset: {x: 90, y: 105}
+    screenShake: 0
+    shakeMag: 0.1
   sounds:
     clips: []
-  screenShake: 0
   queue: []
   swapped: 0
   fall:
@@ -458,6 +459,7 @@ MonoBehaviour:
     oriIndex: 0
     patternIndex: 0
   fallPos: {x: 0, y: 0}
+  playing: 0
   score: 0
   keyLeft:
     key: 276
