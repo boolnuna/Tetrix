@@ -6,11 +6,12 @@
 [X] stop off screen spawing  
 [X] speed up over time  
 [X] line rigging    
-[ ] particals  
-[ ] ghost landing  
-[ ] t spin  
+[X] particals 25m / 100m  
+[ ] ghost landing 45m  
+[ ] t spin 30m  
 [X] screen shake  
-[ ] make sure all patterns  
-[ ] line render / make score borad nicer  
+[ ] make sure all patterns 10m  
+[ ] line render / make score borad nicer 25m  
   
-get on site  
+get on site 20m  
+webgl sound glitch  

@@ -13,6 +13,7 @@ public class Mono : MonoBehaviour
 
     public Render render;
     public Sounds sounds;
+    public Particles particles;
     public int[,] grid = new int[10, 20];
 
     [NonSerialized]
@@ -550,6 +551,9 @@ public class Mono : MonoBehaviour
                             grid[xx, yy - 1] = grid[xx, yy];
                         }
                     }
+
+                    particles.Clear(y);
+
                     cleared++;
                     y--;
                 }
@@ -557,7 +561,7 @@ public class Mono : MonoBehaviour
 
             score += (int)Mathf.Pow(cleared * 4, 2);
             stage = (int)Mathf.Floor((float)score / (float)500);
-            speed = 1 + (stage / 5);
+            speed = 1 + (stage / 4);
 
             Restock();
             swapped = false;
@@ -914,4 +918,36 @@ public class Sounds
         return null;
     }
 
+}
+
+[Serializable]
+public class Particles
+{
+    public ParticleSystem psClear;
+
+    public void Clear(int y)
+    {
+        for (int i = 0; i < 10; i++)
+        {
+            psClear.transform.position = new Vector3(
+                -7.25f + i,
+                y - 10f,
+                0
+                
+            );
+
+            for (int j = 0; j < 10; j++)
+            {
+            // psClear.Play();
+            var emitParams = new ParticleSystem.EmitParams();
+            // emitParams.position = new Vector3(0.0f, 0.0f, 0.0f);
+            emitParams.velocity = Quaternion.Euler(0,0,Random.value * 360f) * new Vector3(0.0f, 1.0f, 0.0f) * 6;
+            emitParams.startLifetime = 0.5f;
+
+            psClear.Emit(emitParams, 1);
+                
+            }
+        }
+
+    }
 }
