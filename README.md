@@ -7,7 +7,7 @@
 [X] speed up over time  
 [X] line rigging    
 [X] particals 25m / 100m  
-[ ] ghost landing 45m  
+[X] ghost landing 45m / 55m  
 [ ] t spin 30m  
 [X] screen shake  
 [ ] make sure all patterns 10m  

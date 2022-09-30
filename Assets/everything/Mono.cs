@@ -791,6 +791,47 @@ public class Render
                 }
             }
         }
+
+        // ghost landing
+        int ghost = 0;
+        bool canMove = true;
+        while (canMove)
+        {
+            Vector2Int[] blocks = mono.JustTheBlocks((int)mono.fall.oriIndex);
+            for (int i = 0; i < 4; i++)
+            {
+                Vector2Int b = blocks[i];
+                bool under = mono.fallPos.y + (4 - b.y) + ghost < 0;
+                if (mono.InBlock(b.x, b.y, 0, ghost) || under)
+                {
+                    canMove = false;
+                    //break;
+                }
+
+            }
+            if (canMove)
+            {
+                ghost--;
+            }
+        }
+        ghost++;
+
+        for (int y = 0; y < 4; y++)
+        {
+            for (int x = 0; x < 4; x++)
+            {
+                if (mono.og[mono.fall.ogIndex][mono.fall.oriIndex][y, x] == 1)
+                {
+                    Block(
+                        mono,
+                        x + mono.fallPos.x,
+                        (4 - y) + mono.fallPos.y + ghost,
+                        mono.fall.patternIndex,
+                        0.3f
+                    );
+                }
+            }
+        }
         texture.Apply();
 
         Transform cam = Camera.main.transform;
@@ -808,16 +849,20 @@ public class Render
         }
     }
     Vector2Int gridAnchor = new Vector2Int(2, 2);
-    void Block(Mono mono, int x, int y, int i)
+    void Block(Mono mono, int x, int y, int i, float alpha = 1)
     {
         for (int yy = 0; yy < 8; yy++)
         {
             for (int xx = 0; xx < 8; xx++)
             {
+                Color pixel = texture.GetPixel(
+                    (x * 8) + yy + gridAnchor.y,
+                    (y * 8) + xx + gridAnchor.x
+                );
                 texture.SetPixel(
                     (x * 8) + yy + gridAnchor.y,
                     (y * 8) + xx + gridAnchor.x,
-                    palette[mono.pattern[i][(7 - xx), yy]]
+                    Color.Lerp(pixel,palette[mono.pattern[i][(7 - xx), yy]], alpha)
                 );
             }
         }
@@ -933,19 +978,19 @@ public class Particles
                 -7.25f + i,
                 y - 10f,
                 0
-                
+
             );
 
             for (int j = 0; j < 10; j++)
             {
-            // psClear.Play();
-            var emitParams = new ParticleSystem.EmitParams();
-            // emitParams.position = new Vector3(0.0f, 0.0f, 0.0f);
-            emitParams.velocity = Quaternion.Euler(0,0,Random.value * 360f) * new Vector3(0.0f, 1.0f, 0.0f) * 6;
-            emitParams.startLifetime = 0.5f;
+                // psClear.Play();
+                var emitParams = new ParticleSystem.EmitParams();
+                // emitParams.position = new Vector3(0.0f, 0.0f, 0.0f);
+                emitParams.velocity = Quaternion.Euler(0, 0, Random.value * 360f) * new Vector3(0.0f, 1.0f, 0.0f) * 6;
+                emitParams.startLifetime = 0.5f;
 
-            psClear.Emit(emitParams, 1);
-                
+                psClear.Emit(emitParams, 1);
+
             }
         }
 
