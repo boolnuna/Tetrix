@@ -422,11 +422,11 @@ public class Mono : MonoBehaviour
 
         if (keyRight.IsDown()) { Shift(new Vector2Int(1, 0), false); }
         if (keyLeft.IsDown()) { Shift(new Vector2Int(-1, 0), false); }
-        if (keyDown.IsDown()) { Shift(new Vector2Int(0, -1), true); }
+        if (keyDown.IsDown()) { Shift(new Vector2Int(0, -1), true, fall.oriIndex, true); }
         if (Input.GetKeyDown(KeyCode.Space))
         {
             int i = 0;
-            while (i < 100 && Shift(new Vector2Int(0, -1), true)) { i++; }
+            while (i < 100 && Shift(new Vector2Int(0, -1), true, fall.oriIndex, true)) { i++; }
         }
 
 
@@ -437,6 +437,7 @@ public class Mono : MonoBehaviour
             step = 0f;
             Shift(new Vector2Int(0, -1), true);
         }
+        coyote -= Time.deltaTime;
     }
 
     public void Restock()
@@ -488,7 +489,9 @@ public class Mono : MonoBehaviour
         }
         return canTurn;
     }
-    public bool Shift(Vector2Int v, bool place, int? oriIndex = null)
+    float coyote;
+    bool ctime = false;
+    public bool Shift(Vector2Int v, bool place, int? oriIndex = null, bool insta = false)
     {
         if (oriIndex == null)
         {
@@ -514,9 +517,15 @@ public class Mono : MonoBehaviour
             return canMove;
         }
 
-        // yo im planting
-        if (place)
+        if (place && !ctime)
         {
+            coyote = insta ? 0 : 1f;
+            ctime = true;
+
+        }
+        if (place && coyote <= 0)
+        {
+            ctime = false;
             for (int i = 0; i < 4; i++)
             {
                 Vector2Int b = blocks[i];
@@ -862,7 +871,7 @@ public class Render
                 texture.SetPixel(
                     (x * 8) + yy + gridAnchor.y,
                     (y * 8) + xx + gridAnchor.x,
-                    Color.Lerp(pixel,palette[mono.pattern[i][(7 - xx), yy]], alpha)
+                    Color.Lerp(pixel, palette[mono.pattern[i][(7 - xx), yy]], alpha)
                 );
             }
         }
