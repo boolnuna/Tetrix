@@ -708,22 +708,35 @@ public class Render
             }
         }
 
-        // grid border
-        for (int y = gridAnchor.y - 1; y < mono.grid.GetLength(1) * 8 + gridAnchor.y + 1; y++)
+        for (int i = 0; i < lines.Length; i++)
         {
-            for (int x = gridAnchor.x - 1; x < mono.grid.GetLength(0) * 8 + gridAnchor.x + 1; x++)
+            Line line = lines[i];
+            for (int j = 0; j < line.length; j++)
             {
-                texture.SetPixel(x, y, palette[0]);
+                texture.SetPixel(
+                    line.start.x + line.dir.x * j,
+                    line.start.y + line.dir.y * j,
+                    palette[0]
+                );
             }
         }
 
-        for (int y = gridAnchor.y; y < mono.grid.GetLength(1) * 8 + gridAnchor.y + 1; y++)
-        {
-            for (int x = gridAnchor.x; x < mono.grid.GetLength(0) * 8 + gridAnchor.x; x++)
-            {
-                texture.SetPixel(x, y, palette[3]);
-            }
-        }
+        // // grid border
+        // for (int y = gridAnchor.y - 1; y < mono.grid.GetLength(1) * 8 + gridAnchor.y + 1; y++)
+        // {
+        //     for (int x = gridAnchor.x - 1; x < mono.grid.GetLength(0) * 8 + gridAnchor.x + 1; x++)
+        //     {
+        //         texture.SetPixel(x, y, palette[0]);
+        //     }
+        // }
+
+        // for (int y = gridAnchor.y; y < mono.grid.GetLength(1) * 8 + gridAnchor.y + 1; y++)
+        // {
+        //     for (int x = gridAnchor.x; x < mono.grid.GetLength(0) * 8 + gridAnchor.x; x++)
+        //     {
+        //         texture.SetPixel(x, y, palette[3]);
+        //     }
+        // }
 
         // render out grid
         for (int y = 0; y < mono.grid.GetLength(1); y++)
@@ -913,6 +926,14 @@ public class Render
                 }
             }
         }
+    }
+
+    public Line[] lines;
+    [Serializable]
+    public class Line
+    {
+        public Vector2Int start, dir;
+        public int length;
     }
 }
 

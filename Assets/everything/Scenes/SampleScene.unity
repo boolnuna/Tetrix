@@ -284,7 +284,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!199 &817032436
 ParticleSystemRenderer:
   serializedVersion: 6
@@ -5307,25 +5307,64 @@ MonoBehaviour:
     quad: {fileID: 1780330215}
     background: {fileID: 2100000, guid: 48edd505c355cb745b11bfc129e13c27, type: 2}
     texture: {fileID: 0}
-    swapOffset: {x: 25, y: 36}
+    swapOffset: {x: 24, y: 33}
     queueOffset: {x: 24, y: 20}
-    scoreOffset: {x: 90, y: 105}
+    scoreOffset: {x: 92, y: 105}
     screenShake: 0
     shakeMag: 0.1
+    lines:
+    - start: {x: 83, y: 1}
+      dir: {x: 1, y: 0}
+      length: 43
+    - start: {x: 83, y: 128}
+      dir: {x: 1, y: 0}
+      length: 43
+    - start: {x: 83, y: 159}
+      dir: {x: 1, y: 0}
+      length: 43
+    - start: {x: 126, y: 159}
+      dir: {x: 0, y: -1}
+      length: 159
+    - start: {x: 1, y: 159}
+      dir: {x: 0, y: -1}
+      length: 159
+    - start: {x: 82, y: 159}
+      dir: {x: 0, y: -1}
+      length: 159
+    - start: {x: 1, y: 1}
+      dir: {x: 1, y: 0}
+      length: 83
   sounds:
-    clips: []
+    clips:
+    - {fileID: 8300000, guid: e64872bc15474344684f792e16de5618, type: 3}
+    - {fileID: 8300000, guid: 886c4410f753216408bed8ed0a8cc4ad, type: 3}
+    - {fileID: 8300000, guid: 9dafa0cdc2ba37042a1e3dea2d1ab29f, type: 3}
+    - {fileID: 8300000, guid: 4bf4bdaf7abd92c45a0506559be4a615, type: 3}
+    - {fileID: 8300000, guid: b459f9db8e4dec841be97d1b1f3a7bb0, type: 3}
   particles:
     psClear: {fileID: 817032437}
-  queue: []
-  swapped: 0
-  fall:
-    ogIndex: 0
+  queue:
+  - ogIndex: 2
+    oriIndex: 3
+    patternIndex: 1
+  - ogIndex: 4
+    oriIndex: 0
+    patternIndex: 2
+  - ogIndex: 4
     oriIndex: 0
     patternIndex: 0
-  fallPos: {x: 0, y: 0}
+  - ogIndex: 4
+    oriIndex: 0
+    patternIndex: 3
+  swapped: 0
+  fall:
+    ogIndex: 5
+    oriIndex: 3
+    patternIndex: 2
+  fallPos: {x: 4, y: 11}
   playing: 0
   gameover: 0
-  score: 0
+  score: 112
   stage: 0
   keyLeft:
     key: 276
